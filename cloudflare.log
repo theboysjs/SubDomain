@@ -7,3 +7,8 @@
 2024-09-12 00:08:10,506:INFO:cloudflare: Successfully deleted DNS record for h.lykcloud.com
 2024-09-12 01:00:32,489:INFO:cloudflare: Successfully created DNS record for test.lykcloud.com
 2024-09-12 01:01:33,024:INFO:cloudflare: Successfully deleted DNS record for test.lykcloud.com
+2024-09-12 07:42:09,857:INFO:cloudflare: Successfully created DNS record for new.lykcloud.com
+2024-09-12 08:02:11,265:INFO:cloudflare: Successfully deleted DNS record for new.lykcloud.com
+2024-09-12 08:11:58,717:ERROR:cloudflare: Failed to create DNS record: [{'code': 9208, 'message': 'Failed to parse. priority must be a number.'}]
+2024-09-12 08:12:47,239:ERROR:cloudflare: Failed to create DNS record: [{'code': 9208, 'message': 'Failed to parse. priority must be a number.'}]
+2024-09-12 08:13:37,416:ERROR:cloudflare: Failed to create DNS record: [{'code': 9208, 'message': 'Failed to parse. priority must be a number.'}]

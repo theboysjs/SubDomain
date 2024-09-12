@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from views.subdomain_creation import SubdomainCreationView
 from cloudflare import get_user_subdomains, delete_subdomain
+from commands import ban, load_data
 
 # Load environment variables
 load_dotenv()
@@ -19,17 +20,22 @@ def load_data():
     if os.path.exists('data.json'):
         with open('data.json', 'r') as f:
             return json.load(f)
-    return {"admins": [], "users": {}}
+    return {"admins": [], "users": {}, "banned_users": []}
 
 # Save data to JSON
 def save_data(data):
     with open('data.json', 'w') as f:
         json.dump(data, f, indent=4)
-
 # Check if user is an admin
 def is_admin(user_id):
     data = load_data()
-    return user_id in data['admins']
+    print(f"Checking admin status for user_id: {user_id}")
+    print(f"Admins in data: {data['admins']}")
+    return str(user_id) in [str(admin_id) for admin_id in data['admins']]
+# Check if user is banned
+def is_banned(user_id):
+    data = load_data()
+    return str(user_id) in data.get('banned_users', [])
 
 @bot.event
 async def on_ready():
@@ -42,6 +48,9 @@ async def on_ready():
 
 @bot.tree.command(name="create-subdomain", description="Create a new subdomain")
 async def create_subdomain(interaction: discord.Interaction):
+    if is_banned(interaction.user.id):
+        await interaction.response.send_message("You are banned from using this bot.", ephemeral=True)
+        return
     view = SubdomainCreationView()
     embed = discord.Embed(title="Subdomain Creation", description="*Let's create a subdomain!*", color=discord.Color.green())
     await interaction.response.send_message(embed=embed, view=view)
@@ -49,6 +58,9 @@ async def create_subdomain(interaction: discord.Interaction):
 
 @bot.tree.command(name="list", description="Show subdomains under the user")
 async def list_subdomains(interaction: discord.Interaction):
+    if is_banned(interaction.user.id):
+        await interaction.response.send_message("You are banned from using this bot.", ephemeral=True)
+        return
     user_id = str(interaction.user.id)
     data = load_data()
     if user_id in data['users']:
@@ -60,6 +72,7 @@ async def list_subdomains(interaction: discord.Interaction):
 
 @bot.tree.command(name="userinfo", description="Show user info (Bot admin only)")
 async def userinfo(interaction: discord.Interaction, user: discord.User):
+    print(f"User ID attempting admin command: {interaction.user.id}")
     if not is_admin(interaction.user.id):
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=discord.Color.red())
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -88,6 +101,7 @@ async def ban_user(interaction: discord.Interaction, user: discord.User):
         for subdomain in subdomains:
             await delete_subdomain(subdomain)
         del data['users'][user_id]
+        data['banned_users'].append(user_id)
         save_data(data)
         embed = discord.Embed(title="User Banned", description=f"User {user.name} has been banned and all their subdomains have been deleted.", color=discord.Color.green())
     else:
@@ -109,6 +123,23 @@ async def whois(interaction: discord.Interaction, domain: str):
             await interaction.response.send_message(embed=embed)
             return
     embed = discord.Embed(title="Whois Lookup", description=f"Domain {domain} is not registered by any user.", color=discord.Color.red())
+    await interaction.response.send_message(embed=embed)
+
+@bot.tree.command(name="unban", description="Unban a user (Bot admin only)")
+async def unban_user(interaction: discord.Interaction, user: discord.User):
+    if not is_admin(interaction.user.id):
+        embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    data = load_data()
+    user_id = str(user.id)
+    if user_id in data.get('banned_users', []):
+        data['banned_users'].remove(user_id)
+        save_data(data)
+        embed = discord.Embed(title="User Unbanned", description=f"User {user.name} has been unbanned and can now use the bot again.", color=discord.Color.green())
+    else:
+        embed = discord.Embed(title="Not Banned", description=f"User {user.name} is not currently banned.", color=discord.Color.yellow())
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="remove", description="Delete user's subdomain")
