@@ -1,0 +1,6 @@
+2024-09-11 17:30:24,355:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
+2024-09-11 17:30:24,357:WARNING:discord.ext.commands.bot: Privileged message content intent is missing, commands may not work as expected.
+2024-09-11 17:30:24,357:INFO:discord.client: logging in using static token
+2024-09-11 17:30:26,032:INFO:discord.gateway: Shard ID None has connected to Gateway (Session ID: a873847c17c818ad5e5c3dff62e56ee2).
+2024-09-11 17:30:28,036:INFO:discord: Logged in as Code Try#3471 (ID: 1191760233362636850)
+2024-09-11 17:30:28,480:INFO:discord: Synced 1 command(s)

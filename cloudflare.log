@@ -1,0 +1,9 @@
+2024-09-11 23:57:22,567:INFO:cloudflare: Successfully created DNS record for test.lykcloud.com
+2024-09-11 23:58:08,677:INFO:cloudflare: Successfully deleted DNS record for test.lykcloud.com
+2024-09-11 23:59:33,625:ERROR:cloudflare: Failed to create DNS record: [{'code': 1004, 'message': 'DNS Validation Error', 'error_chain': [{'code': 9005, 'message': 'Content for A record must be a valid IPv4 address.'}]}]
+2024-09-12 00:00:00,441:INFO:cloudflare: Successfully created DNS record for h.lykcloud.com
+2024-09-12 00:00:11,129:INFO:cloudflare: Successfully deleted DNS record for h.lykcloud.com
+2024-09-12 00:07:16,216:INFO:cloudflare: Successfully created DNS record for h.lykcloud.com
+2024-09-12 00:08:10,506:INFO:cloudflare: Successfully deleted DNS record for h.lykcloud.com
+2024-09-12 01:00:32,489:INFO:cloudflare: Successfully created DNS record for test.lykcloud.com
+2024-09-12 01:01:33,024:INFO:cloudflare: Successfully deleted DNS record for test.lykcloud.com

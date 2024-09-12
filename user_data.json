@@ -1,0 +1,10 @@
+{
+    "1186473897240039444": {
+        "subdomains": [],
+        "selected_zone_id": "0b0be10f69a23b0ef2e266538aedd0a3",
+        "subdomain_name": "new",
+        "selected_record_type": "CNAME",
+        "record_content": "discord.com",
+        "selected_proxy": "false"
+    }
+}
