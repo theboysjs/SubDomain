@@ -45,7 +45,7 @@ async def on_ready():
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(f"Failed to sync commands: {e}")
-
+# Create a subdomain
 @bot.tree.command(name="create-subdomain", description="Create a new subdomain")
 async def create_subdomain(interaction: discord.Interaction):
     if is_banned(interaction.user.id):
@@ -55,7 +55,7 @@ async def create_subdomain(interaction: discord.Interaction):
     embed = discord.Embed(title="Subdomain Creation", description="*Let's create a subdomain!*", color=discord.Color.green())
     await interaction.response.send_message(embed=embed, view=view)
     await view.wait()
-
+# Delete a subdomain
 @bot.tree.command(name="list", description="Show subdomains under the user")
 async def list_subdomains(interaction: discord.Interaction):
     if is_banned(interaction.user.id):
@@ -69,7 +69,7 @@ async def list_subdomains(interaction: discord.Interaction):
     else:
         embed = discord.Embed(title="No Subdomains", description="You don't have any subdomains.", color=discord.Color.red())
     await interaction.response.send_message(embed=embed)
-
+# Delete a subdomain
 @bot.tree.command(name="userinfo", description="Show user info (Bot admin only)")
 async def userinfo(interaction: discord.Interaction, user: discord.User):
     print(f"User ID attempting admin command: {interaction.user.id}")
@@ -86,14 +86,12 @@ async def userinfo(interaction: discord.Interaction, user: discord.User):
     else:
         embed = discord.Embed(title=f"User Info: {user.name}", description="No subdomains registered.", color=discord.Color.red())
     await interaction.response.send_message(embed=embed)
-
 @bot.tree.command(name="ban", description="Ban user and delete all their subdomains (Bot admin only)")
 async def ban_user(interaction: discord.Interaction, user: discord.User):
     if not is_admin(interaction.user.id):
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=discord.Color.red())
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
-
     data = load_data()
     user_id = str(user.id)
     if user_id in data['users']:
