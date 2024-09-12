@@ -43,7 +43,8 @@ async def on_ready():
 @bot.tree.command(name="create-subdomain", description="Create a new subdomain")
 async def create_subdomain(interaction: discord.Interaction):
     view = SubdomainCreationView()
-    await interaction.response.send_message("*Let's create a subdomain!*", view=view)
+    embed = discord.Embed(title="Subdomain Creation", description="*Let's create a subdomain!*", color=discord.Color.green())
+    await interaction.response.send_message(embed=embed, view=view)
     await view.wait()
 
 @bot.tree.command(name="list", description="Show subdomains under the user")
@@ -52,28 +53,32 @@ async def list_subdomains(interaction: discord.Interaction):
     data = load_data()
     if user_id in data['users']:
         subdomains = data['users'][user_id]
-        await interaction.response.send_message(f"Your subdomains:\n{', '.join(subdomains)}")
+        embed = discord.Embed(title="Your Subdomains", description=f"{', '.join(subdomains)}", color=discord.Color.blue())
     else:
-        await interaction.response.send_message("You don't have any subdomains.")
+        embed = discord.Embed(title="No Subdomains", description="You don't have any subdomains.", color=discord.Color.red())
+    await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="userinfo", description="Show user info (Bot admin only)")
 async def userinfo(interaction: discord.Interaction, user: discord.User):
     if not is_admin(interaction.user.id):
-        await interaction.response.send_message("You don't have permission to use this command.", ephemeral=True)
+        embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
     data = load_data()
     user_id = str(user.id)
     if user_id in data['users']:
         subdomains = data['users'][user_id]
-        await interaction.response.send_message(f"User: {user.name}\nTotal domains: {len(subdomains)}\nDomains: {', '.join(subdomains)}")
+        embed = discord.Embed(title=f"User Info: {user.name}", description=f"Total domains: {len(subdomains)}\nDomains: {', '.join(subdomains)}", color=discord.Color.blue())
     else:
-        await interaction.response.send_message(f"User {user.name} has no subdomains.")
+        embed = discord.Embed(title=f"User Info: {user.name}", description="No subdomains registered.", color=discord.Color.red())
+    await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="ban", description="Ban user and delete all their subdomains (Bot admin only)")
 async def ban_user(interaction: discord.Interaction, user: discord.User):
     if not is_admin(interaction.user.id):
-        await interaction.response.send_message("You don't have permission to use this command.", ephemeral=True)
+        embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
     data = load_data()
@@ -84,23 +89,27 @@ async def ban_user(interaction: discord.Interaction, user: discord.User):
             await delete_subdomain(subdomain)
         del data['users'][user_id]
         save_data(data)
-        await interaction.response.send_message(f"User {user.name} has been banned and all their subdomains have been deleted.")
+        embed = discord.Embed(title="User Banned", description=f"User {user.name} has been banned and all their subdomains have been deleted.", color=discord.Color.green())
     else:
-        await interaction.response.send_message(f"User {user.name} has no subdomains to delete.")
+        embed = discord.Embed(title="No Subdomains", description=f"User {user.name} has no subdomains to delete.", color=discord.Color.red())
+    await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="whois", description="Look up the subdomain registered by the user (Bot admin only)")
 async def whois(interaction: discord.Interaction, domain: str):
     if not is_admin(interaction.user.id):
-        await interaction.response.send_message("You don't have permission to use this command.", ephemeral=True)
+        embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
     data = load_data()
     for user_id, subdomains in data['users'].items():
         if domain in subdomains:
             user = await bot.fetch_user(int(user_id))
-            await interaction.response.send_message(f"Domain {domain} is registered by user {user.name} (ID: {user_id})")
+            embed = discord.Embed(title="Whois Lookup", description=f"Domain {domain} is registered by user {user.name} (ID: {user_id})", color=discord.Color.blue())
+            await interaction.response.send_message(embed=embed)
             return
-    await interaction.response.send_message(f"Domain {domain} is not registered by any user.")
+    embed = discord.Embed(title="Whois Lookup", description=f"Domain {domain} is not registered by any user.", color=discord.Color.red())
+    await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="remove", description="Delete user's subdomain")
 async def remove_subdomain(interaction: discord.Interaction, domain: str):
@@ -110,10 +119,11 @@ async def remove_subdomain(interaction: discord.Interaction, domain: str):
         if await delete_subdomain(domain):
             data['users'][user_id].remove(domain)
             save_data(data)
-            await interaction.response.send_message(f"Subdomain {domain} has been deleted.")
+            embed = discord.Embed(title="Subdomain Deleted", description=f"Subdomain {domain} has been deleted.", color=discord.Color.green())
         else:
-            await interaction.response.send_message(f"Failed to delete subdomain {domain}.")
+            embed = discord.Embed(title="Deletion Failed", description=f"Failed to delete subdomain {domain}.", color=discord.Color.red())
     else:
-        await interaction.response.send_message(f"You don't own the subdomain {domain}.")
+        embed = discord.Embed(title="Ownership Issue", description=f"You don't own the subdomain {domain}.", color=discord.Color.red())
+    await interaction.response.send_message(embed=embed)
 
 bot.run(os.getenv('DISCORD_BOT_TOKEN'))
