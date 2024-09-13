@@ -44,6 +44,9 @@ pip install -r requirements.txt
 ```env
 DISCORD_BOT_TOKEN=your_discord_bot_token 
 CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+
+# API OF CLOUDFLAE IS LIKE  ( Token name -  Edit zone DNS	) ( Permissions - Zone.DNS,Zone.DNS) ( Resources -	All zones )
+# https://dash.cloudflare.com/profile/api-tokens
 ```
 
 4. Run the bot:
