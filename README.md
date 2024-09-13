@@ -1,7 +1,7 @@
 # DomainForge
 
 <p align="center">
-  <img src="path_to_your_logo.png" alt="DomainForge Logo" width="200"/>
+  <img src="https://github.com/FreeCode911/DomainForge/blob/main/views/ultra_realistic_1726222400.png?raw=true" alt="DomainForge Logo" width="200"/>
 </p>
 
 DomainForge is a powerful Discord bot that simplifies subdomain management directly from your Discord server. With an intuitive interface and robust features, DomainForge makes it easy to create, manage, and organize subdomains without leaving your Discord environment.
