@@ -69,5 +69,5 @@ If you need help or have any questions, please join our [support server](https:/
 ---
 
 <p align="center">
-Made with ❤ by LegendYt4k
+Made with ❤ by theboys
 </p>
